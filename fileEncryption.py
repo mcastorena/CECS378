@@ -6,8 +6,9 @@ from cryptography.hazmat.primitives import padding
 
 keySize = 32
 ivSize = 16
-padSize = 128
-fileEncrypt = '/Users/mcastro/Desktop/example.jpg'
+blockSize = 128
+fileEncrypt = '/Users/mcastro/Desktop/fruitbat.jpg'
+encryptedFileLoc = '/Users/mcastro/Desktop/encrypt'
 fileDecrypt = '/Users/mcastro/Desktop/decrypt'
 
 
@@ -24,7 +25,7 @@ def MyfileEncrypt(filepath):
     encryptor = cipher.encryptor()
 
 
-    padder = padding.PKCS7(padSize).padder()
+    padder = padding.PKCS7(blockSize).padder()
     padded_data = padder.update(fileStr) + padder.finalize()
     ct = encryptor.update(padded_data) + encryptor.finalize()
     print("Cipher:", ct)
@@ -32,8 +33,8 @@ def MyfileEncrypt(filepath):
     print("Key: ", key)
     print("File Extension: ", extension)
 
-
-    fh = open("/Users/mcastro/Desktop/cipher.jpg", "wb")
+    encryptedFile = encryptedFileLoc + extension
+    fh = open(encryptedFile, "wb")
     fh.write(base64.b64decode(ct))
     fh.close()
 
@@ -51,7 +52,7 @@ def MyfileDecrypt(cipherIVKeyEXT):
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
     decryptor = cipher.decryptor()
     ct = decryptor.update(ct) + decryptor.finalize()
-    unpadder = padding.PKCS7(padSize).unpadder()
+    unpadder = padding.PKCS7(blockSize).unpadder()
     ct = unpadder.update(ct) + unpadder.finalize()
     newFileLocation = fileDecrypt + extension
     fh = open(newFileLocation, "wb")

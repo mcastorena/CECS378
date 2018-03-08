@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives import padding
 
 keySize = 32
 ivSize = 16
-padSize = 128
+blockSize = 128
 
 #Encrypt
 
@@ -19,7 +19,7 @@ def MyEncrypt(message, key):
     print("Plaintext Message: ", message)
     byteMessage = str.encode(message)
 
-    padder = padding.PKCS7(padSize).padder()
+    padder = padding.PKCS7(blockSize).padder()
     padded_data = padder.update(byteMessage) + padder.finalize()
     ct = encryptor.update(padded_data) + encryptor.finalize()
     print("Encrypted message:", ct)
@@ -40,7 +40,7 @@ def MyDecrypt(cipherIV):
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
     decryptor = cipher.decryptor()
     ct = decryptor.update(ct) + decryptor.finalize()
-    unpadder = padding.PKCS7(padSize).unpadder()
+    unpadder = padding.PKCS7(blockSize).unpadder()
     ct = unpadder.update(ct) + unpadder.finalize()
     ct = str(ct, 'utf-8')
     print("Decrypted Message: ", ct)
