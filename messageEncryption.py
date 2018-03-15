@@ -2,10 +2,12 @@ import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
+import json
 
 keySize = 32
 ivSize = 16
 blockSize = 128
+plaintext = 'CECS378'
 
 #Encrypt
 
@@ -22,6 +24,8 @@ def MyEncrypt(message, key):
     padder = padding.PKCS7(blockSize).padder()
     padded_data = padder.update(byteMessage) + padder.finalize()
     ct = encryptor.update(padded_data) + encryptor.finalize()
+
+
     print("Encrypted message:", ct)
     print("IV: ", iv)
     return [ct, iv]
@@ -31,7 +35,7 @@ key = os.urandom(keySize)
 if (len(key) < keySize):
     print('ERROR: Key less than 32 bytes. Key must be exactly 32 bytes in length')
 
-ctIV =  MyEncrypt('cecs378', key)
+ctIV =  MyEncrypt(plaintext, key)
 
 def MyDecrypt(cipherIV):
     # #Decrypt
